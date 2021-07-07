@@ -5,15 +5,18 @@ var FPS = 50;
 var anchoCanvas = 400;
 var altoCanvas = 640;
 
+//DIMENSIONES REALES DE CADA CUADRO DEL TABLERO (40x40 pixels)
+var tamanyoFicha = 40;
+
 var anchoTablero = 10;
-var altoTablero = 16;
+var altoTablero = 20;
 
 var anchoF = 40;
 var altoF = 40;
 
 //(12x17) - (10x16)
 var tablero = 
-[[1,0,0,0,0,0,0,0,0,0,0,1],
+[
 [1,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,1],
@@ -28,9 +31,25 @@ var tablero =
 [1,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,4,0,0,0,0,1],
+[1,0,0,0,2,0,0,0,0,0,0,1],
+[1,0,0,0,0,2,0,0,0,0,0,1],
+[1,0,0,0,0,3,0,0,0,0,0,1],
+[1,0,0,0,3,0,0,0,0,0,0,1],
+[1,0,0,0,0,4,0,0,0,0,0,1],
 [1,1,1,1,1,1,1,1,1,1,1,1]
 ];
+
+var margenSuperior = 4;
+
+//COLORES DE LAS FICHAS
+var rojo = "#FF0000";
+var morado = "#800080";
+var naranja = "#FF8C00";
+var amarillo = "#FFD700";
+var verde = "#008000";
+var cyan = "#00CED1";
+var azul = "#0000CD";
 
 
 var fichaGrafico= [
@@ -254,18 +273,47 @@ var fichaGrafico= [
 var pieza;
 
 var objPieza = function(){
-    this.x = 5;
-    this.y = 7;
+    this.x = 1;
+    this.y = 1;
 
     this.angulo = 0;
-    this.tipo = 4;
+    this.tipo = 0;
 
     this.dibuja = function(){
         for(py=0;py<4;py++){
             for(px=0;px<4;px++){
 
                 if(fichaGrafico[this.tipo][this.angulo][py][px]!=0){ 
-                    ctx.fillStyle = '#777777';
+                    
+                    if(fichaGrafico[this.tipo][this.angulo][py][px]==1)
+                        ctx.fillStyle = rojo;
+
+                    if(fichaGrafico[this.tipo][this.angulo][py][px]==2)    
+                        ctx.fillStyle = naranja;
+                    
+                    if(fichaGrafico[this.tipo][this.angulo][py][px]==3)    
+                    ctx.fillStyle = amarillo;
+
+                    if(fichaGrafico[this.tipo][this.angulo][py][px]==4)    
+                        ctx.fillStyle = verde;
+                    
+                    if(fichaGrafico[this.tipo][this.angulo][py][px]==5)    
+                    ctx.fillStyle = cyan;
+
+                    if(fichaGrafico[this.tipo][this.angulo][py][px]==6)    
+                        ctx.fillStyle = azul;
+
+                    if(fichaGrafico[this.tipo][this.angulo][py][px]==7)    
+                    ctx.fillStyle = morado;
+
+
+
+
+
+
+
+
+
                     ctx.fillRect((this.x+px)*anchoF, (this.y+py)*altoF, anchoF, altoF)
                 }
             }
@@ -287,6 +335,35 @@ var objPieza = function(){
     };
     
 };
+
+
+//DIBUJA EL TABLERO CON TODAS LAS FICHAS QUE YA HAN CAÍDO
+function dibujaTablero(){
+	for(py=margenSuperior;py<=altoTablero;py++){
+		for(px=1;px<=anchoTablero;px++){
+
+			if(tablero[py][px]>0){
+				if(tablero[py][px]==1)
+					ctx.fillStyle=rojo;
+				if(tablero[py][px]==2)
+					ctx.fillStyle=naranja;
+				if(tablero[py][px]==3)
+					ctx.fillStyle=amarillo;
+				if(tablero[py][px]==4)
+					ctx.fillStyle=verde;
+				if(tablero[py][px]==5)
+					ctx.fillStyle=cyan;
+				if(tablero[py][px]==6)
+					ctx.fillStyle=azul;
+				if(tablero[py][px]==7)
+					ctx.fillStyle=morado;
+
+				//A la posición this.py le restamos el margen superior para que dibuje en la zona de la pantalla física que toque
+				ctx.fillRect(((this.px-1)*tamanyoFicha),((this.py-margenSuperior)*tamanyoFicha),tamanyoFicha,tamanyoFicha);
+			}
+		}
+	}
+}
 
 function inicializaTeclado(){
     document.addEventListener('keydown', function(tesla){
@@ -332,6 +409,7 @@ function borrarCanvas(){
 
 function principal(){
     borrarCanvas();
+    dibujaTablero();
     pieza.dibuja();
 
 
