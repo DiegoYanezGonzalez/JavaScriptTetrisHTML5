@@ -31,12 +31,12 @@ var tablero =
 [1,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,1],
 [1,0,0,0,0,0,0,0,0,0,0,1],
-[1,0,0,0,0,0,4,0,0,0,0,1],
-[1,0,0,0,2,0,0,0,0,0,0,1],
-[1,0,0,0,0,2,0,0,0,0,0,1],
-[1,0,0,0,0,3,0,0,0,0,0,1],
-[1,0,0,0,3,0,0,0,0,0,0,1],
-[1,0,0,0,0,4,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
 [1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
@@ -273,11 +273,34 @@ var fichaGrafico= [
 var pieza;
 
 var objPieza = function(){
-    this.x = 1;
-    this.y = 1;
+    this.x = 0;
+    this.y = 0;
 
     this.angulo = 0;
     this.tipo = 0;
+
+    this.retraso = 50;
+    this.fotograma = 0;
+
+
+    this.nueva = function(){
+        this.tipo = Math.floor(Math.random()*7);
+        this.y = 5;
+        this.x = 4;
+    };
+
+    this.caer = function(){
+        if(this.fotograma < this.retraso){
+            this.fotograma++;
+        }
+        else{
+
+            this.y++;
+            this.fotograma = 0;
+        }
+    }
+
+    
 
     this.dibuja = function(){
         for(py=0;py<4;py++){
@@ -307,33 +330,39 @@ var objPieza = function(){
                     ctx.fillStyle = morado;
 
 
-
-
-
-
-
-
-
-                    ctx.fillRect((this.x+px)*anchoF, (this.y+py)*altoF, anchoF, altoF)
+                    ctx.fillRect((this.x+px-1)*anchoF, (this.y+py-margenSuperior)*altoF, anchoF, altoF)
                 }
             }
         }
     };
 
-    
     this.rotar = function(){
+        if(this.angulo < 3 ){
+            this.angulo++;
+        }
+        else{
+            this.angulo = 0;
+        }
         console.log('Rotar')
     };
+
+
+
+
+    
     this.abajo = function(){
+        this.y++
         console.log('Abajo')
     };
     this.derecha = function(){
+        this.x++
         console.log('Derecha')
     };
     this.izquierda = function(){
+        this.x--
         console.log('Izquierda')
     };
-    
+    this.nueva();
 };
 
 
@@ -379,9 +408,11 @@ function inicializaTeclado(){
         if(tesla.keyCode == 39){
             pieza.derecha();
         }
-
+        
     });
-}
+
+    
+};
 
 function inicializa(){
     canvas = document.getElementById('canvas');
@@ -410,6 +441,7 @@ function borrarCanvas(){
 function principal(){
     borrarCanvas();
     dibujaTablero();
+    pieza.caer();
     pieza.dibuja();
 
 
