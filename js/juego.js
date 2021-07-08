@@ -40,6 +40,31 @@ var tablero =
 [1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
+var tableroCopia = 
+[
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,1],
+[1,1,1,1,1,1,1,1,1,1,1,1]
+];
+
 var margenSuperior = 4;
 
 //COLORES DE LAS FICHAS
@@ -269,6 +294,16 @@ var fichaGrafico= [
     ]
     ];
 
+    function reseteaTablero(){
+        console.log('resetea')
+
+        for(py=0;py<21;py++){
+            for(px=0;px<12;px++){
+                tablero[py][px]=tableroCopia[py][px];
+            }
+        }
+    }
+
 
 var pieza;
 
@@ -289,6 +324,36 @@ var objPieza = function(){
         this.x = 4;
     };
 
+    this.compruebaSiPierde = function(){
+        var pierde = false;
+
+        for(px=1;px<anchoTablero+1;px++){
+           if( tablero[2][px]>0){
+               pierde=true;
+           }
+        }    
+        return pierde;
+};
+
+this.limpia = function(){
+    var filaCompleta;
+    for(py=margenSuperior;py<altoTablero;py++){
+        filaCompleta=true;
+
+        for(px=1;px<anchoTablero+1;px++){
+            if(tablero[py][px]==0){
+                filaCompleta=false;
+            }
+        }
+        if(filaCompleta==true){
+            for(px=1;px<anchoTablero+1;px++){
+                tablero[py][px]=0;
+            }
+        }
+    }
+
+};
+
     this.caer = function(){
         if(this.fotograma < this.retraso){
             this.fotograma++;
@@ -299,7 +364,12 @@ var objPieza = function(){
             }
             else{
                 this.fijar();
+                this.limpia();
                 this.nueva();
+
+                if(this.compruebaSiPierde()==true){
+                    reseteaTablero();
+                }
             }
             this.fotograma = 0;
             }
@@ -416,7 +486,7 @@ var objPieza = function(){
 //DIBUJA EL TABLERO CON TODAS LAS FICHAS QUE YA HAN CAÍDO
 function dibujaTablero(){
 	for(py=margenSuperior;py<=altoTablero;py++){
-		for(px=1;px<=anchoTablero;px++){
+		for(px=1;px<=anchoTablero+1;px++){
 
 			if(tablero[py][px]>0){
 				if(tablero[py][px]==1)
